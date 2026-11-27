@@ -93,7 +93,9 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-
+  SCH_Init();
+  SCH_Add_Task(fsm_automatic_run, 0, 10); // Chay FSM tu dong moi 10 ms
+  HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
