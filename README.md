@@ -14,6 +14,7 @@ CO3009-HK261-Nhom65-TrafficLight/
     ├── TrafficLight_Nhom65.ioc # File cấu hình chân và ngoại vi (Chỉ TV1 chỉnh sửa)
     ├── Drivers/                # Thư viện HAL chuẩn của STM32 (Không chỉnh sửa)
     └── Core/
+        ├── Startup/            # Mã khởi động vi điều khiển do CubeIDE sinh ra
         ├── Inc/                # Chứa toàn bộ file header (.h)
         └── Src/                # Chứa toàn bộ file mã nguồn (.c)
 ```
