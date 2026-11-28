@@ -132,25 +132,22 @@ static void show_tuning(void)
     uint8_t y = fsm_tuning_get_yellow();
     uint8_t g = fsm_tuning_get_green();
 
-    if (fsm_tuning_is_showing_error()) {
-        lcd_print_line(0, "ERR: R != Y+G");
-        sprintf(line, "R=%02d  Y+G=%02d", r, y + g);
-        lcd_print_line(1, line);
-        return;
-    }
-
-    if (status == TUN_RED)         sprintf(line, "TUNE RED     %02ds", r);
-    else if (status == TUN_YELLOW) sprintf(line, "TUNE YELLOW  %02ds", y);
-    else                           sprintf(line, "TUNE GREEN   %02ds", g);
-    lcd_print_line(0, line);
-
-    // dau '>' chi den dang chinh, OK/ERR cho biet bo gia tri co hop le khong
-    sprintf(line, "%cR%02d%cY%02d%cG%02d %s",
-            status == TUN_RED    ? '>' : ' ', r,
-            status == TUN_YELLOW ? '>' : ' ', y,
-            status == TUN_GREEN  ? '>' : ' ', g,
-            fsm_tuning_check_time(r, y, g) ? " OK" : "ERR");
-    lcd_print_line(1, line);
+    if (status == TUN_RED) {
+		sprintf(line, "TUNING RED");
+		lcd_print_line(0, line);
+		sprintf(line, "[R:%02d] Y:%02d G:%02d", r, y, g);
+		lcd_print_line(1, line);
+	} else if (status == TUN_YELLOW) {
+		sprintf(line, "TUNING YELLOW");
+		lcd_print_line(0, line);
+		sprintf(line, "R:%02d [Y:%02d] G:%02d", r, y, g);
+		lcd_print_line(1, line);
+	} else if (status == TUN_GREEN) {
+		sprintf(line, "TUNING GREEN");
+		lcd_print_line(0, line);
+		sprintf(line, "R:%02d Y:%02d [G:%02d]", r, y, g);
+		lcd_print_line(1, line);
+	}
 }
 
 void lcd_display(void)
@@ -165,11 +162,44 @@ void lcd_display(void)
     if (status >= TUN_INIT && status <= TUN_GREEN) {
         if (status != TUN_INIT) show_tuning();
     } else if (status >= MAN_INIT && status <= MAN_YELLOW_RED) {
-        lcd_print_line(0, "MODE: MANUAL");
+    	switch (status) {
+			case MAN_RED_GREEN:
+				lcd_print_line(0, "MANUAL R1:G2");
+				break;
+			case MAN_RED_YELLOW:
+				lcd_print_line(0, "MANUAL R1:Y2");
+				break;
+			case MAN_GREEN_RED:
+				lcd_print_line(0, "MANUAL G1:R2");
+				break;
+			case MAN_YELLOW_RED:
+				lcd_print_line(0, "MANUAL Y1:R2");
+				break;
+			default:
+				lcd_print_line(0, "MANUAL R1:G2");
+				break;
+		}
         show_temp_humi();
     } else {
-        sprintf(line, "AUTO W1:%02d W2:%02d", counter_way1, counter_way2);
-        lcd_print_line(0, line);
-        show_temp_humi();
+    	char c1 = 'R', c2 = 'G';
+		switch (status) {
+			case AUTO_RED_GREEN:
+				c1 = 'R'; c2 = 'G';
+				break;
+			case AUTO_RED_YELLOW:
+				c1 = 'R'; c2 = 'Y';
+				break;
+			case AUTO_GREEN_RED:
+				c1 = 'G'; c2 = 'R';
+				break;
+			case AUTO_YELLOW_RED:
+				c1 = 'Y'; c2 = 'R';
+				break;
+			default:
+				break;
+		}
+		sprintf(line, "AUTO %c1:%02d %c2:%02d", c1, counter_way1, c2, counter_way2);
+		lcd_print_line(0, line);
+		show_temp_humi();
     }
 }

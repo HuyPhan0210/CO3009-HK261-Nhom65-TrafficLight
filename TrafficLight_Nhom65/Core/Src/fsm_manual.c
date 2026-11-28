@@ -17,16 +17,6 @@ static uint8_t manual_check_exit(void) {
         return 1;
     }
 
-    // Nhan BTN_RESET -> khoi phuc thoi gian mac dinh (5s - 3s - 2s) va ve AUTO
-    // LUU Y: Doi chieu ten 3 bien thoi gian va don vi (giay hay ms) voi Core/Inc/global.h
-    if (is_button_pressed(BTN_RESET)) {
-        time_red    = 5;
-        time_green  = 3;
-        time_yellow = 2;
-        status = INIT;
-        return 1;
-    }
-
     return 0;
 }
 
@@ -43,9 +33,7 @@ void fsm_manual_run(void) {
 
             // Buoc 3: Xoa cac co nut nhan ton dong tu che do truoc
             // (tranh truong hop vua vao MANUAL da bi nhay pha ngay)
-            (void)is_button_pressed(BTN_UP);
-            (void)is_button_pressed(BTN_DOWN);
-            (void)is_button_pressed(BTN_CONFIRM);
+            (void)is_button_pressed(BTN_SELECT);
 
             // Buoc 4: Chuyen sang trang thai giu den dau tien
             status = MAN_RED_GREEN;
@@ -57,10 +45,8 @@ void fsm_manual_run(void) {
 
             if (manual_check_exit()) break;
 
-            if (is_button_pressed(BTN_UP)) {
+            if (is_button_pressed(BTN_SELECT)) {
                 status = MAN_RED_YELLOW;
-            } else if (is_button_pressed(BTN_DOWN)) {
-                status = MAN_YELLOW_RED;
             }
             break;
 
@@ -70,10 +56,8 @@ void fsm_manual_run(void) {
 
             if (manual_check_exit()) break;
 
-            if (is_button_pressed(BTN_UP)) {
+            if (is_button_pressed(BTN_SELECT)) {
                 status = MAN_GREEN_RED;
-            } else if (is_button_pressed(BTN_DOWN)) {
-                status = MAN_RED_GREEN;
             }
             break;
 
@@ -83,10 +67,8 @@ void fsm_manual_run(void) {
 
             if (manual_check_exit()) break;
 
-            if (is_button_pressed(BTN_UP)) {
+            if (is_button_pressed(BTN_SELECT)) {
                 status = MAN_YELLOW_RED;
-            } else if (is_button_pressed(BTN_DOWN)) {
-                status = MAN_RED_YELLOW;
             }
             break;
 
@@ -96,10 +78,8 @@ void fsm_manual_run(void) {
 
             if (manual_check_exit()) break;
 
-            if (is_button_pressed(BTN_UP)) {
+            if (is_button_pressed(BTN_SELECT)) {
                 status = MAN_RED_GREEN;
-            } else if (is_button_pressed(BTN_DOWN)) {
-                status = MAN_GREEN_RED;
             }
             break;
 

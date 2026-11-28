@@ -7,10 +7,10 @@
 
 // Quy uoc chi so 5 nut nhan (khop BTN_MODE = 0, BTN_RESET = 4)
 #define BTN_MODE        0   // BTN_1 (PA8)  - Chuyen che do AUTO / MANUAL / TUNING
-#define BTN_UP          1   // BTN_2 (PA9)  - Chuyen pha den (MANUAL) / Tang thoi gian (TUNING)
-#define BTN_DOWN        2   // BTN_3 (PC7)  - Chuyen pha nguoc (MANUAL) / Giam hoac chon den (TUNING)
-#define BTN_CONFIRM     3   // BTN_4 (PB6)  - Xac nhan / Luu cau hinh (TUNING)
-#define BTN_RESET       4   // BTN_U (PC13) - Reset mac dinh (5s - 3s - 2s)
+#define BTN_SELECT      1   // BTN_4 (PB6)  - Chuyen den thu cong (MANUAL) hoac Chon den can chinh (TUNING)
+#define BTN_UP          2   // BTN_2 (PA9)  - Tang thoi gian +1s (TUNING)
+#define BTN_DOWN        3   // BTN_3 (PC7)  - Giam thoi gian -1s (TUNING)
+#define BTN_CONFIRM     4   // BTN_U (PC13) - Xac nhan luu cau hinh (TUNING)
 
 /**
  * @brief Doc va chong doi tat ca 5 nut nhan.

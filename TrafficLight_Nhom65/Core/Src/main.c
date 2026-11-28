@@ -22,10 +22,15 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "global.h"
 #include "scheduler.h"
 #include "software_timer.h"
+#include "global.h"
+#include "button.h"
 #include "fsm_automatic.h"
+#include "fsm_manual.h"
+#include "fsm_tuning.h"
+#include "dht20.h"
+#include "lcd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -96,9 +101,17 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  SCH_Init();
-  SCH_Add_Task(fsm_automatic_run, 0, 10); // Chay FSM tu dong moi 10 ms
   HAL_TIM_Base_Start_IT(&htim2);
+  SCH_Init();
+  lcd_init();
+  dht20_init();
+
+  SCH_Add_Task(button_reading,    0,  10);   // Quét và chống dội 5 nút mỗi 10 ms
+  SCH_Add_Task(fsm_automatic_run, 0,  10);   // Chạy chế độ tự động mỗi 10 ms
+  SCH_Add_Task(fsm_manual_run,    0,  10);   // Chạy chế độ chỉnh tay mỗi 10 ms
+  SCH_Add_Task(fsm_tuning_run,    0,  10);   // Chạy chế độ chỉnh thời gian mỗi 10 ms
+  SCH_Add_Task(dht20_task,        10, 100);  // Đọc cảm biến DHT20 mỗi 100 ms
+  SCH_Add_Task(lcd_display,       20, 50);   // Cập nhật màn hình LCD mỗi 50 ms
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -240,17 +253,11 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LED_1_GPIO_Port, LED_1_Pin, GPIO_PIN_RESET);
+  __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, TL2_B_Pin|TL1_A_Pin|TL2_A_Pin|TL1_B_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LED_2_GPIO_Port, LED_2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : BTN_U_Pin BTN_3_Pin */
   GPIO_InitStruct.Pin = BTN_U_Pin|BTN_3_Pin;
@@ -258,26 +265,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LED_1_Pin */
-  GPIO_InitStruct.Pin = LED_1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LED_1_GPIO_Port, &GPIO_InitStruct);
-
   /*Configure GPIO pins : TL2_B_Pin TL1_A_Pin TL2_A_Pin TL1_B_Pin */
   GPIO_InitStruct.Pin = TL2_B_Pin|TL1_A_Pin|TL2_A_Pin|TL1_B_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : LED_2_Pin */
-  GPIO_InitStruct.Pin = LED_2_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LED_2_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : BTN_1_Pin BTN_2_Pin */
   GPIO_InitStruct.Pin = BTN_1_Pin|BTN_2_Pin;

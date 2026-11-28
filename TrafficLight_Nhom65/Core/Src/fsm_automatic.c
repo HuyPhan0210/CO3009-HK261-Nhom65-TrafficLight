@@ -1,20 +1,8 @@
 #include "fsm_automatic.h"
 #include "global.h"
 #include "software_timer.h"
-
-// Hang so giao tiep voi module den va nut nhan cua TV2
-#define LIGHT_OFF       0
-#define LIGHT_GREEN     1
-#define LIGHT_YELLOW    2
-#define LIGHT_RED       3
-
-#define BTN_MODE        0
-#define BTN_RESET       4
-
-// Khai bao weak de ca nhom Build 0 errors trong luc cho TV2 merge code
-__attribute__((weak)) void traffic_set_way1(uint8_t color) {}
-__attribute__((weak)) void traffic_set_way2(uint8_t color) {}
-__attribute__((weak)) uint8_t is_button_pressed(uint8_t index) { return 0; }
+#include "button.h"
+#include "traffic_light.h"
 
 // Cap nhat bo dem nguoc moi 1 giay de hien thi LCD
 static void update_countdown_1s(void) {
@@ -30,20 +18,12 @@ static void check_auto_buttons(void) {
     if (is_button_pressed(BTN_MODE)) {
         status = MAN_INIT;
     }
-    if (is_button_pressed(BTN_RESET)) {
-        time_red = 5;
-        time_green = 3;
-        time_yellow = 2;
-        status = INIT;
-    }
 }
 
 void fsm_automatic_run(void) {
     switch (status) {
         case INIT:
-            if (time_red != (time_green + time_yellow)) {
-                time_red = time_green + time_yellow;
-            }
+        	time_red = time_green + time_yellow;
 
             status = AUTO_RED_GREEN;
             traffic_set_way1(LIGHT_RED);
@@ -64,7 +44,6 @@ void fsm_automatic_run(void) {
                 traffic_set_way1(LIGHT_RED);
                 traffic_set_way2(LIGHT_YELLOW);
 
-                counter_way1 = time_yellow;
                 counter_way2 = time_yellow;
 
                 setTimer(TIMER_TRAFFIC, time_yellow * 1000);
@@ -101,7 +80,6 @@ void fsm_automatic_run(void) {
                 traffic_set_way2(LIGHT_RED);
 
                 counter_way1 = time_yellow;
-                counter_way2 = time_yellow;
 
                 setTimer(TIMER_TRAFFIC, time_yellow * 1000);
                 setTimer(TIMER_1S, 1000);

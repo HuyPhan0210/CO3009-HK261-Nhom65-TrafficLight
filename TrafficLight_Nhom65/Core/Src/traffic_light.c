@@ -7,11 +7,11 @@
 #define TL_OFF_A        GPIO_PIN_RESET
 #define TL_OFF_B        GPIO_PIN_RESET
 
-#define TL_GREEN_A      GPIO_PIN_RESET
-#define TL_GREEN_B      GPIO_PIN_SET
+#define TL_GREEN_A      GPIO_PIN_SET
+#define TL_GREEN_B      GPIO_PIN_RESET
 
-#define TL_YELLOW_A     GPIO_PIN_SET
-#define TL_YELLOW_B     GPIO_PIN_RESET
+#define TL_YELLOW_A     GPIO_PIN_RESET
+#define TL_YELLOW_B     GPIO_PIN_SET
 
 #define TL_RED_A        GPIO_PIN_SET
 #define TL_RED_B        GPIO_PIN_SET

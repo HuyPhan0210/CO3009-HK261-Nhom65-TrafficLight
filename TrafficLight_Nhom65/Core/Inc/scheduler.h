@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define SCH_MAX_TASKS                 20
+#define SCH_MAX_TASKS                 10
 #define NO_TASK_ID                    0
 #define TICK                          10  // Chu kỳ ngắt TIM2 = 10 ms
 
