@@ -4,7 +4,7 @@
 // Mảng luôn sắp xếp theo thời gian đến hạn.
 // Delay = số tick tính từ task đứng trước.
 
-sTask SCH_tasks_G[SCH_MAX_TASKS];
+static sTask SCH_tasks_G[SCH_MAX_TASKS];
 unsigned char Error_code_G = 0;
 static uint32_t next_task_id = 1;
 static volatile uint32_t time_tick = 0;

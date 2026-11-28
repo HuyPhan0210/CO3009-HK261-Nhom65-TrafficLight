@@ -1,7 +1,7 @@
 #include "software_timer.h"
 
-static uint32_t timer_counter[MAX_TIMERS] = {0};
-static uint8_t timer_flag[MAX_TIMERS] = {0};
+static volatile uint32_t timer_counter[MAX_TIMERS] = {0};
+static volatile uint8_t  timer_flag[MAX_TIMERS] = {0};
 
 void setTimer(uint8_t index, uint32_t duration_ms) {
     if (index >= MAX_TIMERS) return;

@@ -16,12 +16,12 @@
 
 extern I2C_HandleTypeDef hi2c1;
 
-#define NUM_SAMPLES   5  // so lan doc moi chu ky
-#define MIN_GOOD      3  // can it nhat 3 mau tot
-#define CYCLE_STEPS   20  // 20 x 100 ms = 2 s cap nhat 1 lan
+#define NUM_SAMPLES	5  	// so lan doc moi chu ky
+#define MIN_GOOD   	3	// can it nhat 3 mau tot
+#define CYCLE_STEPS 20  // 20 x 100 ms = 2 s cap nhat 1 lan
 
-static float   temperature = 0;
-static float   humidity = 0;
+static float   temperature  = 0;
+static float   humidity     = 0;
 static uint8_t sensor_error = 1;
 
 static int   step = 0; // buoc hien tai trong chu ky 0..19
@@ -31,6 +31,14 @@ static float t_sum, h_sum;
 static float t_min, t_max, h_min, h_max;
 
 static int i2c_error_count = 0;
+
+static void i2c_bus_recover(void)
+{
+    hi2c1.Instance->CR1 |= I2C_CR1_SWRST;    // reset mem khoi I2C
+    hi2c1.Instance->CR1 &= ~I2C_CR1_SWRST;
+    HAL_I2C_DeInit(&hi2c1);
+    HAL_I2C_Init(&hi2c1);
+}
 
 void i2c_bus_check(HAL_StatusTypeDef st)
 {
@@ -43,14 +51,6 @@ void i2c_bus_check(HAL_StatusTypeDef st)
         i2c_bus_recover();
         i2c_error_count = 0;
     }
-}
-
-void i2c_bus_recover(void)
-{
-    hi2c1.Instance->CR1 |= I2C_CR1_SWRST;    // reset mem khoi I2C
-    hi2c1.Instance->CR1 &= ~I2C_CR1_SWRST;
-    HAL_I2C_DeInit(&hi2c1);
-    HAL_I2C_Init(&hi2c1);
 }
 
 static HAL_StatusTypeDef dht20_write(uint8_t *buf, uint16_t len)

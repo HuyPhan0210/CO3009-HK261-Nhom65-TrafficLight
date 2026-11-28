@@ -15,6 +15,5 @@ uint8_t dht20_is_error(void); // 1 = cam bien loi / chua co so do
 
 // Kiem tra loi bus I2C, dung chung cho DHT20 va LCD
 void i2c_bus_check(HAL_StatusTypeDef st);
-void i2c_bus_recover(void);
 
 #endif /* INC_DHT20_H_ */

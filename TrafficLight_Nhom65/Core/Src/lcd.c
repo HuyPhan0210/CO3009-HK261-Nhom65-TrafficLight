@@ -1,4 +1,5 @@
 #include "lcd.h"
+#include "main.h"
 #include "global.h"
 #include "dht20.h"
 #include "fsm_tuning.h"
@@ -10,7 +11,7 @@ extern I2C_HandleTypeDef hi2c1;
 #define LCD_BACKLIGHT  0x08
 #define LCD_EN         0x04
 #define LCD_RS         0x01
-#define REINIT_PERIOD  50      // 50 lan x 200 ms = 10 s
+#define REINIT_PERIOD  200      // 50 lan x 200 ms = 10 s
 
 static char screen[2][17];     // noi dung dang hien thi tren LCD
 static int  lcd_error = 0;     // 1 = vua gui loi, can khoi tao lai
@@ -132,22 +133,23 @@ static void show_tuning(void)
     uint8_t y = fsm_tuning_get_yellow();
     uint8_t g = fsm_tuning_get_green();
 
-    if (status == TUN_RED) {
-		sprintf(line, "TUNING RED");
-		lcd_print_line(0, line);
-		sprintf(line, "[R:%02d] Y:%02d G:%02d", r, y, g);
-		lcd_print_line(1, line);
-	} else if (status == TUN_YELLOW) {
-		sprintf(line, "TUNING YELLOW");
-		lcd_print_line(0, line);
-		sprintf(line, "R:%02d [Y:%02d] G:%02d", r, y, g);
-		lcd_print_line(1, line);
-	} else if (status == TUN_GREEN) {
-		sprintf(line, "TUNING GREEN");
-		lcd_print_line(0, line);
-		sprintf(line, "R:%02d Y:%02d [G:%02d]", r, y, g);
-		lcd_print_line(1, line);
+    switch (status) {
+		case TUN_RED:
+			lcd_print_line(0, "TUNING RED");
+			sprintf(line, "[R:%02d] Y:%02d G:%02d", r, y, g);
+			break;
+		case TUN_YELLOW:
+			lcd_print_line(0, "TUNING YELLOW");
+			sprintf(line, "R:%02d [Y:%02d] G:%02d", r, y, g);
+			break;
+		case TUN_GREEN:
+			lcd_print_line(0, "TUNING GREEN");
+			sprintf(line, "R:%02d Y:%02d [G:%02d]", r, y, g);
+			break;
+		default:
+			return;
 	}
+    lcd_print_line(1, line);
 }
 
 void lcd_display(void)
@@ -162,23 +164,14 @@ void lcd_display(void)
     if (status >= TUN_INIT && status <= TUN_GREEN) {
         if (status != TUN_INIT) show_tuning();
     } else if (status >= MAN_INIT && status <= MAN_YELLOW_RED) {
-    	switch (status) {
-			case MAN_RED_GREEN:
-				lcd_print_line(0, "MANUAL R1:G2");
-				break;
-			case MAN_RED_YELLOW:
-				lcd_print_line(0, "MANUAL R1:Y2");
-				break;
-			case MAN_GREEN_RED:
-				lcd_print_line(0, "MANUAL G1:R2");
-				break;
-			case MAN_YELLOW_RED:
-				lcd_print_line(0, "MANUAL Y1:R2");
-				break;
-			default:
-				lcd_print_line(0, "MANUAL R1:G2");
-				break;
+    	const char *title = "MANUAL R1:G2";
+		switch (status) {
+			case MAN_RED_YELLOW: title = "MANUAL R1:Y2"; break;
+			case MAN_GREEN_RED:  title = "MANUAL G1:R2"; break;
+			case MAN_YELLOW_RED: title = "MANUAL Y1:R2"; break;
+			default: break;
 		}
+		lcd_print_line(0, title);
         show_temp_humi();
     } else {
     	char c1 = 'R', c2 = 'G';

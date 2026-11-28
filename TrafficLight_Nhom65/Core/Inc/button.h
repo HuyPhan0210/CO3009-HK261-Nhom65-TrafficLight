@@ -5,11 +5,11 @@
 
 #define NUM_OF_BUTTONS  5
 
-// Quy uoc chi so 5 nut nhan (khop BTN_MODE = 0, BTN_RESET = 4)
+// Quy uoc chi so 5 nut nhan
 #define BTN_MODE        0   // BTN_1 (PA8)  - Chuyen che do AUTO / MANUAL / TUNING
-#define BTN_SELECT      1   // BTN_4 (PB6)  - Chuyen den thu cong (MANUAL) hoac Chon den can chinh (TUNING)
-#define BTN_UP          2   // BTN_2 (PA9)  - Tang thoi gian +1s (TUNING)
-#define BTN_DOWN        3   // BTN_3 (PC7)  - Giam thoi gian -1s (TUNING)
+#define BTN_SELECT      1   // BTN_2 (PA9)  - Chuyen den thu cong (MANUAL) hoac Chon den can chinh (TUNING)
+#define BTN_UP          2   // BTN_3 (PC7)  - Tang thoi gian +1s (TUNING)
+#define BTN_DOWN        3   // BTN_4 (PB6)  - Giam thoi gian -1s (TUNING)
 #define BTN_CONFIRM     4   // BTN_U (PC13) - Xac nhan luu cau hinh (TUNING)
 
 /**
@@ -19,7 +19,7 @@ void button_reading(void);
 
 /**
  * @brief Kiem tra nut co vua duoc nhan don hay khong (tu dong xoa co sau khi doc).
- * @param index: Chi so nut (0..4) hoac macro BTN_MODE .. BTN_RESET.
+ * @param index: Chi so nut (0..4) hoac macro BTN_MODE .. BTN_CONFIRM.
  * @return 1 neu vua nhan, 0 neu khong.
  */
 uint8_t is_button_pressed(uint8_t index);

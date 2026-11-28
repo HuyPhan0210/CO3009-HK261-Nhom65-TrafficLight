@@ -24,7 +24,6 @@
 /* USER CODE BEGIN Includes */
 #include "scheduler.h"
 #include "software_timer.h"
-#include "global.h"
 #include "button.h"
 #include "fsm_automatic.h"
 #include "fsm_manual.h"
@@ -101,7 +100,6 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim2);
   SCH_Init();
   lcd_init();
   dht20_init();
@@ -112,6 +110,8 @@ int main(void)
   SCH_Add_Task(fsm_tuning_run,    0,  10);   // Chạy chế độ chỉnh thời gian mỗi 10 ms
   SCH_Add_Task(dht20_task,        10, 100);  // Đọc cảm biến DHT20 mỗi 100 ms
   SCH_Add_Task(lcd_display,       20, 50);   // Cập nhật màn hình LCD mỗi 50 ms
+
+  HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
